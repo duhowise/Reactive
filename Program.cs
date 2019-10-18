@@ -10,7 +10,9 @@ namespace Reactive
     {
         static void Main(string[] args)
         {
-            StartBackgroundWork();
+            //StartBackgroundWork();
+            //var data = await LongRunningOperationAsync("");
+            ParallelExecutionTest();
             System.Console.ReadLine();
         }
 
@@ -34,8 +36,7 @@ namespace Reactive
 
             #endregion
 
-           var data= await LongRunningOperationAsync("");
-           Console.WriteLine(data);
+          
         }
 
         public static int DoLongRunningTask(string param)
@@ -50,7 +51,17 @@ namespace Reactive
                     Observable.ToAsync<string, int>(DoLongRunningTask)(param).Subscribe(o)
                 );
         }
+        public static async void ParallelExecutionTest()
+        {
+            var o = Observable.CombineLatest(
+                Observable.Start(() => { Console.WriteLine("Executing 1st on Thread: {0}", Thread.CurrentThread.ManagedThreadId); return "Result A"; }),
+                Observable.Start(() => { Console.WriteLine("Executing 2nd on Thread: {0}", Thread.CurrentThread.ManagedThreadId); return "Result B"; }),
+                Observable.Start(() => { Console.WriteLine("Executing 3rd on Thread: {0}", Thread.CurrentThread.ManagedThreadId); return "Result C"; })
+            ).Finally(() => Console.WriteLine("Done!"));
 
+            foreach (string r in await o.FirstAsync())
+                Console.WriteLine(r);
+        }
     }
 }
 
