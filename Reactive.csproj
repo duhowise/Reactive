@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="RxSamples\**" />
+    <EmbeddedResource Remove="RxSamples\**" />
+    <None Remove="RxSamples\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Reactive.Core" Version="4.2.0" />
   </ItemGroup>
 
